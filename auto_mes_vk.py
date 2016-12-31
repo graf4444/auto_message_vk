@@ -67,7 +67,7 @@ class MainWindow(QDialog, from_class):
                 self.ui.label.setText(u'Ошибка! Введен неправильный id: "' + str(self.ids[i]) + u'" в ' + str(i+1) + u' строке!\nВводить только цифры id!')
                 return;
         self.text = self.ui.textEdit_2.toPlainText().split('\n\n')
-        print(self.text)
+        # print(self.text)
 
         if self.ui.checkBox.isChecked():
             now = QtCore.QDateTime.currentDateTime()
