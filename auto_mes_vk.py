@@ -4,6 +4,7 @@ import vk
 import webbrowser
 import time
 
+
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import QApplication, QDialog, QDateTimeEdit, QLineEdit
 from PyQt5.uic import loadUiType
@@ -49,12 +50,18 @@ class MainWindow(QDialog, from_class):
     def send(self):
         self.ui.label.setText('')
         self.ui.label_13.setText('')
+        self.ui.label_14.setText('')
         self.login = self.ui.lineEdit.text()
         self.password = self.ui.lineEdit_2.text()
         self.token = self.ui.lineEdit_token.text()
 
         if len(self.token) == 0:
-            self.session = vk.AuthSession(scope='messages', app_id=5210750, user_login=self.login, user_password=self.password)
+            try:
+                self.session = vk.AuthSession(scope='messages', app_id=5210750, user_login=self.login, user_password=self.password)
+                self.ui.label_14.setText('Ок!')
+            except:
+                self.ui.label_14.setText('Ошибка входа!')
+                return
         else:
             self.session = vk.Session(access_token=self.token)
         self.api = vk.API(self.session)
