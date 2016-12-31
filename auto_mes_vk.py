@@ -48,6 +48,7 @@ class MainWindow(QDialog, from_class):
 
     def send(self):
         self.ui.label.setText('')
+        self.ui.label_13.setText('')
         self.login = self.ui.lineEdit.text()
         self.password = self.ui.lineEdit_2.text()
         self.token = self.ui.lineEdit_token.text()
@@ -66,6 +67,7 @@ class MainWindow(QDialog, from_class):
                 self.ui.label.setText(u'Ошибка! Введен неправильный id: "' + str(self.ids[i]) + u'" в ' + str(i+1) + u' строке!\nВводить только цифры id!')
                 return;
         self.text = self.ui.textEdit_2.toPlainText().split('\n\n')
+        print(self.text)
 
         if self.ui.checkBox.isChecked():
             now = QtCore.QDateTime.currentDateTime()
@@ -80,6 +82,9 @@ class MainWindow(QDialog, from_class):
             mes = randint(0, len(self.text)-1)
             self.api.messages.send(user_id=id, message=self.text[mes])
             time.sleep(randint(int(self.ui.spinBox.value()), int(self.ui.spinBox_2.value())))
+
+        self.ui.label_13.setText('Выполнено')
+
 
 
 #---------------------------------------------------------#
