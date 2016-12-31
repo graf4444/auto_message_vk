@@ -5,7 +5,7 @@ import webbrowser
 import time
 
 from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtWidgets import QApplication, QDialog, QDateTimeEdit
+from PyQt5.QtWidgets import QApplication, QDialog, QDateTimeEdit, QLineEdit
 from PyQt5.uic import loadUiType
 from PyQt5 import QtCore, QtGui
 from random import randint
@@ -22,8 +22,10 @@ class MainWindow(QDialog, from_class):
         self.ui.setupUi(self)
 
         self.ui.dateTimeEdit.setEnabled(False)
+        self.ui.lineEdit_2.setEchoMode(QLineEdit.Password)
 
-        self.ui.pushButton.clicked.connect(self.test)
+
+        self.ui.pushButton.clicked.connect(self.send)
         self.ui.pushButton_2.clicked.connect(self.get_token)
         self.ui.pushButton_3.clicked.connect(self.set_dateTime)
         self.ui.checkBox.stateChanged.connect(self.state_changed)
@@ -44,13 +46,17 @@ class MainWindow(QDialog, from_class):
         webbrowser.open_new_tab(
             'https://oauth.vk.com/authorize?client_id=5210750&scope=friends,messages&response_type=token')
 
-    def test(self):
+    def send(self):
+        self.ui.label.setText('')
+        self.login = self.ui.lineEdit.text()
+        self.password = self.ui.lineEdit_2.text()
         self.token = self.ui.lineEdit_token.text()
 
-        self.session = vk.Session(access_token=self.token)
+        if len(self.token) == 0:
+            self.session = vk.AuthSession(scope='messages', app_id=5210750, user_login=self.login, user_password=self.password)
+        else:
+            self.session = vk.Session(access_token=self.token)
         self.api = vk.API(self.session)
-        self.ui.label.setText('')
-
 
         self.ids = self.ui.textEdit.toPlainText().split('\n')
         for i in range(len(self.ids)):
@@ -59,15 +65,20 @@ class MainWindow(QDialog, from_class):
             else:
                 self.ui.label.setText(u'Ошибка! Введен неправильный id: "' + str(self.ids[i]) + u'" в ' + str(i+1) + u' строке!\nВводить только цифры id!')
                 return;
-        self.text = self.ui.textEdit_2.toPlainText()
+        self.text = self.ui.textEdit_2.toPlainText().split('\n\n')
 
         if self.ui.checkBox.isChecked():
             now = QtCore.QDateTime.currentDateTime()
             self.balance = now.secsTo(self.ui.dateTimeEdit.dateTime())
             time.sleep(self.balance)
 
+        # for id in self.ids:
+        #     cur = self.api.users.get(user_ids=id)
+        #     print(cur[0]['first_name'], cur[0]['last_name'])
+
         for id in self.ids:
-            self.api.messages.send(user_id=id, message=self.text)
+            mes = randint(0, len(self.text)-1)
+            self.api.messages.send(user_id=id, message=self.text[mes])
             time.sleep(randint(int(self.ui.spinBox.value()), int(self.ui.spinBox_2.value())))
 
 
