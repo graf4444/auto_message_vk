@@ -64,7 +64,7 @@ class MainWindow(QDialog, from_class):
                 return
         else:
             self.session = vk.Session(access_token=self.token)
-        self.api = vk.API(self.session)
+        self.api = vk.API(self.session, v='5.35')
 
         self.ids = self.ui.textEdit.toPlainText().split('\n')
         for i in range(len(self.ids)):
